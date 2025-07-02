@@ -1,0 +1,15 @@
+# Fichiers et dossiers spécifiques à PHP
+/vendor/
+.env
+/log/
+/tmp/
+
+# Fichiers de configuration de l'IDE
+.idea/
+.vscode/
+*.sublime-project
+*.sublime-workspace
+
+# Fichiers système
+.DS_Store
+Thumbs.db
