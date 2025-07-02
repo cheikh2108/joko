@@ -1,0 +1,125 @@
+/* Styles généraux pour le corps de la page */
+html, body {
+    height: 100%; /* Permet au body de prendre toute la hauteur de la fenêtre */
+    margin: 0;
+    font-family: 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; /* Une pile de polices modernes */
+    background-color: #f0f2f5; /* Un gris très clair pour le fond */
+    color: #333; /* Couleur de texte par défaut */
+    line-height: 1.6;
+}
+
+body.dark-theme {
+    background-color: #2c2c2c; /* Fond sombre */
+    color: #f8f9fa; /* Texte clair */
+}
+
+/* Conteneur principal pour centrer le contenu et ajouter de l'espace */
+main.container {
+    padding-top: 40px; /* Plus d'espace au-dessus du contenu */
+    padding-bottom: 40px;
+}
+
+/* Styles pour les cartes (utilisées pour les formulaires de connexion/inscription) */
+.card {
+    border: none; /* Supprime la bordure par défaut de Bootstrap */
+    border-radius: 15px; /* Coins plus arrondis pour un look moderne */
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15); /* Ombre douce et prononcée */
+    overflow: hidden; /* S'assure que le contenu ne dépasse pas les coins arrondis */
+    transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out; /* Effet de transition au survol */
+}
+
+.card:hover {
+    transform: translateY(-5px); /* Léger mouvement vers le haut au survol */
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.2); /* Ombre plus intense au survol */
+}
+
+body.dark-theme .card {
+    background-color: #383838; /* Fond de carte plus foncé en mode sombre */
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4); /* Ombre plus visible en mode sombre */
+}
+
+.card-header {
+    background-color: #f8f9fa; /* Fond plus clair pour l'en-tête de la carte */
+    border-bottom: 1px solid #e0e0e0; /* Petite bordure en bas */
+    padding: 25px; /* Plus de padding */
+    font-size: 1.5rem; /* Texte d'en-tête plus grand */
+    font-weight: 700; /* Gras */
+    text-align: center;
+}
+
+body.dark-theme .card-header {
+    background-color: #4a4a4a;
+    border-color: #555;
+    color: #e2e6ea;
+}
+
+.card-body {
+    padding: 35px; /* Plus de padding pour le corps de la carte */
+}
+
+/* Styles pour les contrôles de formulaire (inputs) */
+.form-control {
+    border-radius: 10px; /* Coins plus arrondis pour les inputs */
+    padding: 14px 18px; /* Plus de padding pour les inputs */
+    border: 1px solid #ced4da;
+    transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+
+.form-control:focus {
+    border-color: #007bff; /* Couleur de bordure Bootstrap au focus */
+    box-shadow: 0 0 0 0.25rem rgba(0, 123, 255, 0.25); /* Ombre légère au focus */
+}
+
+body.dark-theme .form-control {
+    background-color: #444;
+    border-color: #555;
+    color: #f8f9fa; /* Texte clair */
+}
+
+body.dark-theme .form-control::placeholder {
+    color: #bbb; /* Couleur du placeholder en mode sombre */
+}
+
+body.dark-theme .form-control:focus {
+    background-color: #4c4c4c;
+    border-color: #8ecae6; /* Bordure focus plus claire */
+    box-shadow: 0 0 0 0.25rem rgba(142, 202, 230, 0.3);
+}
+
+/* Styles pour les boutons */
+.btn-primary, .btn-success {
+    border-radius: 10px;
+    padding: 12px 25px;
+    font-weight: 600;
+    transition: background-color 0.2s ease, transform 0.1s ease;
+}
+
+.btn-primary:hover, .btn-success:hover {
+    transform: translateY(-2px); /* Léger mouvement au survol */
+}
+
+/* Liens */
+a {
+    color: #007bff;
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+a:hover {
+    color: #0056b3;
+    text-decoration: underline;
+}
+
+body.dark-theme a {
+    color: #8ecae6;
+}
+
+body.dark-theme a:hover {
+    color: #219ebc;
+}
+
+/* Alerts Bootstrap (pour les messages flash) */
+.alert {
+    border-radius: 8px;
+    font-weight: 500;
+}
