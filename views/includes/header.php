@@ -1,3 +1,6 @@
+<?php
+require_once APP_PATH . '/Core/helpers.php';
+?>
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -20,23 +23,38 @@
                         <li class="nav-item">
                             <a class="nav-link active" aria-current="page" href="<?php echo BASE_URL; ?>">Accueil</a>
                         </li>
+                        <?php if (isLoggedIn()): ?>
                         <li class="nav-item">
                             <a class="nav-link" href="<?php echo BASE_URL; ?>/conversations">Conversations</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="<?php echo BASE_URL; ?>/contacts">Contacts</a>
                         </li>
+                        <?php endif; ?>
                     </ul>
                     <ul class="navbar-nav">
                         <li class="nav-item">
                             <button class="btn btn-outline-secondary" id="theme-toggle-button">Basculer Thème</button>
                         </li>
+                        <?php if (isLoggedIn()): ?>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <?php echo e($_SESSION['user_username'] ?? 'Utilisateur'); ?>
+                            </a>
+                            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                <li><a class="dropdown-item" href="<?php echo BASE_URL; ?>/profile">Profil</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item" href="<?php echo BASE_URL; ?>/logout">Déconnexion</a></li>
+                            </ul>
+                        </li>
+                        <?php else: ?>
                         <li class="nav-item">
                             <a class="nav-link" href="<?php echo BASE_URL; ?>/login">Connexion</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="<?php echo BASE_URL; ?>/logout">Déconnexion</a>
+                            <a class="nav-link" href="<?php echo BASE_URL; ?>/register">Inscription</a>
                         </li>
+                        <?php endif; ?>
                     </ul>
                 </div>
             </div>

@@ -14,11 +14,17 @@ function handleRequest(PDO $pdo, string $theme_class) {
     // Supprimez le slash de début et de fin pour une comparaison facile
     $uri = trim($uri, '/');
 
+    // Diviser l'URI en parties pour gérer les paramètres
+    $parts = explode('/', $uri);
+    $route = $parts[0] ?? '';
+    $param1 = $parts[1] ?? '';
+    $param2 = $parts[2] ?? '';
+
     // Définition des routes
     // Chaque 'case' représente une URL attendue (après BASE_URL)
     // et ce qu'il faut faire quand cette URL est demandée.
 
-    switch ($uri) {
+    switch ($route) {
         case '': // Route par défaut : La page d'accueil ou tableau de bord
             require_once APP_PATH . '/Controllers/dashboard_controller.php';
             handleDashboard($pdo, $theme_class); // Fonction du contrôleur du tableau de bord
@@ -40,24 +46,42 @@ function handleRequest(PDO $pdo, string $theme_class) {
             break;
 
         case 'conversations': // Route pour la liste des conversations
-            require_once APP_PATH . '/Controllers/conversation_controller.php';
-            listConversations($pdo, $theme_class);
+            if ($param1 === 'delete' && is_numeric($param2)) {
+                require_once APP_PATH . '/Controllers/conversation_controller.php';
+                deleteConversation($pdo, $theme_class);
+            } else {
+                require_once APP_PATH . '/Controllers/conversation_controller.php';
+                listConversations($pdo, $theme_class);
+            }
             break;
             
-        case 'messages': // Route pour afficher les messages d'une conversation spécifique (simplifié pour l'instant)
-            // Plus tard, cette route pourrait être '/messages/{id_conversation}'
-            require_once APP_PATH . '/Controllers/message_controller.php';
-            listMessages($pdo, $theme_class);
-            break;
-
-        case 'send-message': // Route pour envoyer un message
-            require_once APP_PATH . '/Controllers/message_controller.php';
-            sendMessage($pdo, $theme_class);
+        case 'messages': // Route pour afficher les messages d'une conversation spécifique
+            if ($param1 === 'send') {
+                require_once APP_PATH . '/Controllers/message_controller.php';
+                sendMessage($pdo, $theme_class);
+            } elseif (is_numeric($param1)) {
+                require_once APP_PATH . '/Controllers/message_controller.php';
+                listMessages($pdo, $theme_class);
+            } else {
+                require_once APP_PATH . '/Controllers/message_controller.php';
+                listMessages($pdo, $theme_class);
+            }
             break;
 
         case 'contacts': // Route pour la liste des contacts
-            require_once APP_PATH . '/Controllers/contact_controller.php';
-            listContacts($pdo, $theme_class);
+            if ($param1 === 'add') {
+                require_once APP_PATH . '/Controllers/contact_controller.php';
+                addContact($pdo, $theme_class);
+            } elseif ($param1 === 'remove' && is_numeric($param2)) {
+                require_once APP_PATH . '/Controllers/contact_controller.php';
+                removeContact($pdo, $theme_class);
+            } elseif ($param1 === 'search') {
+                require_once APP_PATH . '/Controllers/contact_controller.php';
+                searchUsers($pdo, $theme_class);
+            } else {
+                require_once APP_PATH . '/Controllers/contact_controller.php';
+                listContacts($pdo, $theme_class);
+            }
             break;
 
         case 'toggle-theme': // Route pour basculer le thème (géré par JS)

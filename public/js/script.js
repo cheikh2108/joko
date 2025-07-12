@@ -7,7 +7,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
             // Envoyer une requête POST au serveur pour enregistrer la préférence
             // Utilisez la fonction fetch() pour une requête AJAX moderne
-            fetch('<?php echo BASE_URL; ?>/toggle-theme', {
+            fetch('/joko/toggle-theme', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

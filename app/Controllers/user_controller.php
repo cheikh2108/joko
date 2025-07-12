@@ -6,36 +6,37 @@
  * @param string $theme_class La classe CSS du thème.
  */
 function handleLogin(PDO $pdo, string $theme_class) {
+    // Inclure les modèles et helpers
+    require_once APP_PATH . '/Models/user_model.php';
+    require_once APP_PATH . '/Core/helpers.php';
+    
     // Si le formulaire est soumis (méthode POST)
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $email = filter_input(INPUT_POST, 'email', FILTER_VALIDATE_EMAIL);
         $password = filter_input(INPUT_POST, 'password', FILTER_SANITIZE_SPECIAL_CHARS);
 
         if (!$email) {
-            $_SESSION['flash_error'] = "Veuillez entrer une adresse email valide.";
-            header('Location: ' . BASE_URL . '/login');
-            exit();
+            setFlashMessage('error', "Veuillez entrer une adresse email valide.");
+            redirect(BASE_URL . '/login');
         }
         if (empty($password)) {
-            $_SESSION['flash_error'] = "Veuillez entrer votre mot de passe.";
-            header('Location: ' . BASE_URL . '/login');
-            exit();
+            setFlashMessage('error', "Veuillez entrer votre mot de passe.");
+            redirect(BASE_URL . '/login');
         }
 
-        // --- Logique d'authentification (à développer avec la BDD) ---
-        // Pour l'instant, simulation d'une authentification réussie ou échouée
-        if ($email === 'test@example.com' && $password === 'password123') {
-            $_SESSION['user_id'] = 1; // Stocker l'ID utilisateur en session
-            $_SESSION['user_email'] = $email; // Stocker l'email en session
-            $_SESSION['flash_success'] = "Connexion réussie ! Bienvenue.";
-            header('Location: ' . BASE_URL . '/'); // Rediriger vers le tableau de bord
-            exit();
+        // Authentification avec le modèle
+        $user = authenticateUser($pdo, $email, $password);
+        
+        if ($user) {
+            $_SESSION['user_id'] = $user['id'];
+            $_SESSION['user_email'] = $user['email'];
+            $_SESSION['user_username'] = $user['username'];
+            setFlashMessage('success', "Connexion réussie ! Bienvenue " . e($user['username']) . ".");
+            redirect(BASE_URL . '/');
         } else {
-            $_SESSION['flash_error'] = "Email ou mot de passe incorrect.";
-            header('Location: ' . BASE_URL . '/login');
-            exit();
+            setFlashMessage('error', "Email ou mot de passe incorrect.");
+            redirect(BASE_URL . '/login');
         }
-        // --- Fin Logique d'authentification ---
 
     } else {
         // Afficher le formulaire de connexion (méthode GET)
@@ -52,36 +53,50 @@ function handleLogin(PDO $pdo, string $theme_class) {
  * @param string $theme_class La classe CSS du thème.
  */
 function handleRegister(PDO $pdo, string $theme_class) {
+    // Inclure les modèles et helpers
+    require_once APP_PATH . '/Models/user_model.php';
+    require_once APP_PATH . '/Core/helpers.php';
+    
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-        $username = filter_input(INPUT_POST, 'username', FILTER_SANITIZE_SPECIAL_CHARS);
+        $username = sanitizeString($_POST['username'] ?? '');
         $email = filter_input(INPUT_POST, 'email', FILTER_VALIDATE_EMAIL);
-        $password = filter_input(INPUT_POST, 'password', FILTER_SANITIZE_SPECIAL_CHARS);
-        $confirm_password = filter_input(INPUT_POST, 'confirm_password', FILTER_SANITIZE_SPECIAL_CHARS);
+        $password = $_POST['password'] ?? '';
+        $confirm_password = $_POST['confirm_password'] ?? '';
 
-        // Validation simple côté serveur
+        // Validation côté serveur
         if (empty($username) || !$email || empty($password) || empty($confirm_password)) {
-            $_SESSION['flash_error'] = "Tous les champs sont requis.";
-            header('Location: ' . BASE_URL . '/register');
-            exit();
+            setFlashMessage('error', "Tous les champs sont requis.");
+            redirect(BASE_URL . '/register');
         }
+        
         if ($password !== $confirm_password) {
-            $_SESSION['flash_error'] = "Les mots de passe ne correspondent pas.";
-            header('Location: ' . BASE_URL . '/register');
-            exit();
+            setFlashMessage('error', "Les mots de passe ne correspondent pas.");
+            redirect(BASE_URL . '/register');
         }
+        
         if (strlen($password) < 6) {
-            $_SESSION['flash_error'] = "Le mot de passe doit contenir au moins 6 caractères.";
-            header('Location: ' . BASE_URL . '/register');
-            exit();
+            setFlashMessage('error', "Le mot de passe doit contenir au moins 6 caractères.");
+            redirect(BASE_URL . '/register');
+        }
+        
+        if (emailExists($pdo, $email)) {
+            setFlashMessage('error', "Cette adresse email est déjà utilisée.");
+            redirect(BASE_URL . '/register');
+        }
+        
+        if (usernameExists($pdo, $username)) {
+            setFlashMessage('error', "Ce nom d'utilisateur est déjà pris.");
+            redirect(BASE_URL . '/register');
         }
 
-        // --- Logique d'enregistrement (à développer avec la BDD) ---
-        // Pour l'instant, simulation d'un enregistrement
-        // Vous devrez insérer l'utilisateur dans la BDD et hacher le mot de passe ici
-        $_SESSION['flash_success'] = "Inscription réussie ! Vous pouvez maintenant vous connecter.";
-        header('Location: ' . BASE_URL . '/login');
-        exit();
-        // --- Fin Logique d'enregistrement ---
+        // Créer l'utilisateur
+        if (createUser($pdo, $username, $email, $password)) {
+            setFlashMessage('success', "Inscription réussie ! Vous pouvez maintenant vous connecter.");
+            redirect(BASE_URL . '/login');
+        } else {
+            setFlashMessage('error', "Erreur lors de l'inscription. Veuillez réessayer.");
+            redirect(BASE_URL . '/register');
+        }
 
     } else {
         // Afficher le formulaire d'inscription (méthode GET)
@@ -98,6 +113,8 @@ function handleRegister(PDO $pdo, string $theme_class) {
  * @param string $theme_class La classe CSS du thème.
  */
 function handleLogout(PDO $pdo, string $theme_class) {
+    require_once APP_PATH . '/Core/helpers.php';
+    
     // Détruire toutes les variables de session
     $_SESSION = array();
 
@@ -114,7 +131,6 @@ function handleLogout(PDO $pdo, string $theme_class) {
     session_destroy();
 
     // Rediriger vers la page de connexion
-    $_SESSION['flash_success'] = "Vous avez été déconnecté avec succès.";
-    header('Location: ' . BASE_URL . '/login');
-    exit();
+    setFlashMessage('success', "Vous avez été déconnecté avec succès.");
+    redirect(BASE_URL . '/login');
 }

@@ -1,8 +1,7 @@
 <?php
-$error = $_SESSION['flash_error'] ?? '';
-$success = $_SESSION['flash_success'] ?? '';
-unset($_SESSION['flash_error']);
-unset($_SESSION['flash_success']);
+require_once APP_PATH . '/Core/helpers.php';
+$error = getFlashMessage('error');
+$success = getFlashMessage('success');
 ?>
 
 <div class="row justify-content-center">
@@ -14,12 +13,12 @@ unset($_SESSION['flash_success']);
             <div class="card-body">
                 <?php if ($error): ?>
                     <div class="alert alert-danger" role="alert">
-                        <?php echo htmlspecialchars($error); ?>
+                        <?php echo e($error); ?>
                     </div>
                 <?php endif; ?>
                 <?php if ($success): ?>
                     <div class="alert alert-success" role="alert">
-                        <?php echo htmlspecialchars($success); ?>
+                        <?php echo e($success); ?>
                     </div>
                 <?php endif; ?>
 

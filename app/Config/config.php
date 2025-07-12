@@ -13,4 +13,4 @@ define('VIEWS_PATH', ROOT_PATH . '/views');
 define('PUBLIC_PATH', ROOT_PATH . '/public');
 
 // URL de base
-define('BASE_URL', '/joko'); // À adapter selon votre configuration de serveur web
+define('BASE_URL', '/joko'); 
