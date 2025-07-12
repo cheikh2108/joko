@@ -55,31 +55,7 @@ Une application de messagerie simple développée en PHP avec une architecture f
    - Sélectionnez le fichier `database.sql` de votre projet
    - Cliquez sur "Exécuter"
 
-### Étape 4 : Configurer l'application
 
-1. **Modifiez la configuration**
-   - Ouvrez le fichier : `app/Config/config.php`
-   - Modifiez les paramètres si nécessaire :
-
-```php
-define('DB_HOST', 'localhost');
-define('DB_NAME', 'joko_db');
-define('DB_USER', 'root');        // Utilisateur par défaut XAMPP
-define('DB_PASS', '');            // Mot de passe vide par défaut
-define('BASE_URL', '/joko');      // URL de votre projet
-```
-
-### Étape 5 : Tester l'application
-
-1. **Accédez à l'application**
-   - Ouvrez votre navigateur
-   - Allez sur : `http://localhost/joko/`
-
-2. **Testez avec les comptes existants**
-   - **alice@example.com** / password123
-   - **bob@example.com** / password123
-   - **charlie@example.com** / password123
-   - **diana@example.com** / password123
 
 ## Structure du projet
 
